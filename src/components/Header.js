@@ -16,7 +16,7 @@ function Header(props) {
           to={location.pathname === "/signin" ? "/signup" : "/signin"}
           className="header__login"
         >
-          {location.pathname === "/signin" ? `Iniciar Sesión` : "Regístrate"}
+          {location.pathname === "/signin" ? `Regístrate` : "Inicia sesión"}
         </Link>
       </div>
     </header>

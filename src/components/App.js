@@ -13,6 +13,8 @@ import { EditAvatarPopup } from "./EditAvatarPopup";
 import { AddPlacePopup } from "./AddPlacePopup";
 import Login from "./Login";
 import Register from "./Register";
+import ProtectedRoute from "./ProtectedRoute";
+import { InfoTooltip } from "./InfoTooltip";
 
 function App() {
   const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
@@ -20,6 +22,8 @@ function App() {
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
 
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
+
+  const [isSuccesPopupOpen, setIsSucessPopupOpen] = useState(false);
 
   const [selectedCard, setSelectedCard] = useState({});
 
@@ -30,6 +34,8 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false);
 
   const [isRegistered, setIsRegistered] = useState(false);
+
+  const [state, setState] = useState(false);
 
   useEffect(() => {
     api.getUserInfo().then((data) => {
@@ -58,6 +64,10 @@ function App() {
     setEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
     setIsEditAvatarPopupOpen(false);
+    /*
+    En el submit de iniciar sesion o registrar cambiar el estado de setIsSuccesPopupOpen
+    */
+    setIsSucessPopupOpen(false);
     setSelectedCard({});
   }
 
@@ -115,7 +125,7 @@ function App() {
           onClick={handleRegister}
         />
         <Switch>
-          <Route path="/main">
+          <ProtectedRoute path="/main" loggedIn={loggedIn}>
             <Main
               onEditProfileClick={handleEditProfileClick}
               onAddPlaceClick={handleAddPlaceClick}
@@ -126,14 +136,14 @@ function App() {
               onCardDelete={handleCardDelete}
               currentUser={currentUser}
             />
-          </Route>
+          </ProtectedRoute>
           <Route path="/signin">
             <Login />
           </Route>
           <Route path="/signup">
             <Register />
           </Route>
-          <Route exact path="/">
+          <Route>
             {loggedIn ? <Redirect to="/main" /> : <Redirect to="/signin" />}
           </Route>
         </Switch>
@@ -160,6 +170,7 @@ function App() {
           card={selectedCard}
           onClose={closeAllPopups}
         />
+        <InfoTooltip onClose={closeAllPopups} state={state}></InfoTooltip>
       </div>
     </CurrentUserContext.Provider>
   );

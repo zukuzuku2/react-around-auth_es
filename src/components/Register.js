@@ -18,11 +18,11 @@ function Register() {
         name="sign-up"
         onSubmit={handleSubmit}
       >
-        <h1 className="sign-up-title">Regístrate</h1>
+        <h1 className="sign-up__title">Regístrate</h1>
         <input
           type="email"
           name="email"
-          placeholder="Correo Electrónico"
+          placeholder="Correo electrónico"
           className="sign-up__input"
           minLength="2"
           maxLength="50"
