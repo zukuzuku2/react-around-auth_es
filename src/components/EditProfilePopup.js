@@ -47,7 +47,6 @@ export function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
           <div className="form__user-info">
             <input
               type="text"
-              onChange={handleNameChange}
               placeholder="Inserte su Nombre"
               className="form__input"
               id="form-name"
@@ -55,13 +54,13 @@ export function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
               maxLength="40"
               required
               value={name}
+              onChange={handleNameChange}
             />
             <span className="form-name-error form__input-error">
               Este campo es obligatorio
             </span>
             <input
               type="text"
-              onChange={handleDescriptionChange}
               placeholder="Inserte su Skill"
               className="form__input"
               id="form-skills"
@@ -69,6 +68,7 @@ export function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
               maxLength="200"
               required
               value={description}
+              onChange={handleDescriptionChange}
             />
             <span className="form-skills-error form__input-error">
               Este campo es obligatorio

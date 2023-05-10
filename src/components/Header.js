@@ -1,22 +1,20 @@
-import { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-function Header(props) {
+
+function Header({ onClick, ...props }) {
   const location = useLocation();
-  useEffect(() => {
-    console.log(location.pathname);
-  }, []);
   return (
     <header className="header">
       <img src={props.image} alt="Banner Header" className="header__pic" />
       <div className="header__text">
-        <Link to="#" className="header__mail">
-          {props.email}
-        </Link>
+        <p className="header__mail">{props.email}</p>
         <Link
           to={location.pathname === "/signin" ? "/signup" : "/signin"}
           className="header__login"
+          onClick={onClick}
         >
-          {location.pathname === "/signin" ? `Regístrate` : "Inicia sesión"}
+          {location.pathname === "/signin" ? `Regístrate` : ""}
+          {location.pathname === "/signup" ? `Inicia sesión` : ""}
+          {location.pathname === "/" ? "Cerrar sesión" : ""}
         </Link>
       </div>
     </header>

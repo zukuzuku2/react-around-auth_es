@@ -14,12 +14,12 @@ export const signup = ({ email, password }) => {
       if (data.error) {
         throw new Error(data.error);
       }
-      console.log(data);
+      return data.error;
     });
 };
 
 export const signin = ({ email, password }) => {
-  // console.log(email, password);
+  console.log(`Me ejecuto`);
   return fetch(`${BASE_URL}/signin`, {
     method: "POST",
     headers: {
@@ -27,34 +27,33 @@ export const signin = ({ email, password }) => {
     },
     body: JSON.stringify({ password, email }),
   })
-    .then((res) => res.json())
+    .then((res) => {
+      res.json();
+      console.log(`Llego`);
+    })
     .then((data) => {
-      if (data) {
-        localStorage.setItem("token", data.token);
-        return data;
+      debugger;
+      if (data.error) {
+        throw new Error(data.error);
       } else {
-        return;
+        localStorage.setItem("token", data.token);
+        console.log(data);
+        return data;
       }
     })
     .catch((err) => console.log(err));
 };
 
-export const userMe = () => {
+export const getContent = (token) => {
   return fetch(`${BASE_URL}/users/me`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
   })
-    .then((res) => {
-      try {
-        if (res.status === 200) {
-          return res.json();
-        }
-      } catch (e) {
-        return e;
-      }
-    })
+    .then((res) => res.json())
+
+    .then((data) => data)
     .catch((err) => console.log(err));
 };

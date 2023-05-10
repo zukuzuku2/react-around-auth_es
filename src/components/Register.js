@@ -3,7 +3,11 @@ import { Link, useHistory } from "react-router-dom";
 
 import * as auth from "../utils/auth";
 
-function Register() {
+function Register({
+  onSuccesPopupOpen,
+  handleStateErrorInfo,
+  handleStateSuccesInfo,
+}) {
   const history = useHistory();
   const [values, setValues] = useState({
     email: "",
@@ -20,9 +24,16 @@ function Register() {
     auth
       .signup(values)
       .then((res) => {
+        onSuccesPopupOpen();
+        handleStateSuccesInfo();
         history.push("/signin");
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(`ejecuto`);
+        onSuccesPopupOpen();
+        handleStateErrorInfo();
+        console.log(err);
+      });
   };
 
   return (

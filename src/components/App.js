@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Route, Switch, Redirect, Router } from "react-router-dom";
+import { Route, Switch, Redirect, useHistory } from "react-router-dom";
 import Header from "./Header";
 import Main from "./Main";
 import Footer from "./Footer";
@@ -15,8 +15,11 @@ import Login from "./Login";
 import Register from "./Register";
 import ProtectedRoute from "./ProtectedRoute";
 import { InfoTooltip } from "./InfoTooltip";
+import * as auth from "../utils/auth";
 
 function App() {
+  const history = useHistory();
+
   const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
 
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
@@ -33,9 +36,20 @@ function App() {
 
   const [loggedIn, setLoggedIn] = useState(false);
 
-  const [isRegistered, setIsRegistered] = useState(false);
+  const [userData, setUserData] = useState("");
 
-  const [state, setState] = useState(false);
+  const [stateInfoToolTip, setStateInfoToolTip] = useState(true);
+
+  useEffect(() => {
+    tokenCheck();
+  }, []);
+
+  useEffect(() => {
+    if (loggedIn) {
+      setLoggedIn(true);
+      history.push("/");
+    }
+  }, [loggedIn]);
 
   useEffect(() => {
     api.getUserInfo().then((data) => {
@@ -110,13 +124,36 @@ function App() {
     });
   }
 
-  function handleRegister() {
-    console.log(isRegistered);
-    setIsRegistered(!isRegistered);
+  function handleLoggedIn() {
+    setLoggedIn(true);
   }
 
-  function handleLoggedIn() {
-    setLoggedIn(!loggedIn);
+  function handleLoggedOut() {
+    localStorage.removeItem("token");
+    setLoggedIn(false);
+  }
+
+  function tokenCheck() {
+    const token = localStorage.getItem("token");
+    if (token) {
+      console.log(token);
+      auth.getContent(token).then((res) => {
+        setLoggedIn(true);
+        setUserData(res.data.email);
+        console.log(userData);
+      });
+    }
+  }
+
+  function handleSuccessOrErrorInfo() {
+    setIsSucessPopupOpen(true);
+  }
+
+  function handleStateErrorInfo() {
+    setStateInfoToolTip(false);
+  }
+  function handleStateSuccesInfo() {
+    setStateInfoToolTip(true);
   }
 
   return (
@@ -124,31 +161,40 @@ function App() {
       <div className="page">
         <Header
           image={headerImage}
-          email={loggedIn ? "email@email.com" : ""}
-          isRegistered={isRegistered}
-          onClick={handleRegister}
+          email={loggedIn ? userData : ""}
+          onClick={handleLoggedOut}
         />
+        <ProtectedRoute path="/" loggedIn={loggedIn}>
+          <Main
+            onEditProfileClick={handleEditProfileClick}
+            onAddPlaceClick={handleAddPlaceClick}
+            onEditAvatarClick={handleEditAvatarClick}
+            onCardClick={handleCardClick}
+            cards={cards}
+            onCardLike={handleCardLike}
+            onCardDelete={handleCardDelete}
+            currentUser={currentUser}
+          />
+        </ProtectedRoute>
+
         <Switch>
-          <ProtectedRoute path="/main" loggedIn={loggedIn}>
-            <Main
-              onEditProfileClick={handleEditProfileClick}
-              onAddPlaceClick={handleAddPlaceClick}
-              onEditAvatarClick={handleEditAvatarClick}
-              onCardClick={handleCardClick}
-              cards={cards}
-              onCardLike={handleCardLike}
-              onCardDelete={handleCardDelete}
-              currentUser={currentUser}
-            />
-          </ProtectedRoute>
           <Route path="/signin">
-            <Login isLoggedIn={handleLoggedIn} isRegistered={handleRegister} />
+            <Login
+              isLoggedIn={handleLoggedIn}
+              onSuccesPopupOpen={handleSuccessOrErrorInfo}
+              handleStateErrorInfo={handleStateErrorInfo}
+              handleStateSuccesInfo={handleStateSuccesInfo}
+            />
           </Route>
           <Route path="/signup">
-            <Register />
+            <Register
+              onSuccesPopupOpen={handleSuccessOrErrorInfo}
+              handleStateErrorInfo={handleStateErrorInfo}
+              handleStateSuccesInfo={handleStateSuccesInfo}
+            />
           </Route>
           <Route>
-            {loggedIn ? <Redirect to="/main" /> : <Redirect to="/signin" />}
+            {loggedIn ? <Redirect to="/" /> : <Redirect to="/signin" />}
           </Route>
         </Switch>
 
@@ -174,7 +220,11 @@ function App() {
           card={selectedCard}
           onClose={closeAllPopups}
         />
-        <InfoTooltip onClose={closeAllPopups} state={state}></InfoTooltip>
+        <InfoTooltip
+          onClose={closeAllPopups}
+          isOpen={isSuccesPopupOpen}
+          handleStateInfo={stateInfoToolTip}
+        ></InfoTooltip>
       </div>
     </CurrentUserContext.Provider>
   );

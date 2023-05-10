@@ -3,13 +3,25 @@ import { Link, useHistory } from "react-router-dom";
 
 import * as auth from "../utils/auth";
 
-function Login({ isLoggedIn, isRegistered }) {
+function Login({ isLoggedIn, onSuccesPopupOpen, handleStateInfo }) {
   const history = useHistory();
   const [values, setValues] = useState({
     password: "",
     email: "",
   });
   const [isUseEffect, setIsUseEffect] = useState(false);
+
+  useEffect(() => {
+    if (isUseEffect) {
+      setValues({
+        password: "",
+        email: "",
+      });
+      isLoggedIn();
+      onSuccesPopupOpen();
+      history.push("/main");
+    }
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -18,6 +30,7 @@ function Login({ isLoggedIn, isRegistered }) {
   };
 
   const handleSubmit = (e) => {
+    console.log(`me ejecuto`);
     e.preventDefault();
     if (!values.email || !values.password) {
       return;
@@ -25,22 +38,17 @@ function Login({ isLoggedIn, isRegistered }) {
     auth
       .signin(values)
       .then(() => {
+        debugger;
         if (localStorage.getItem("token")) {
-          setValues(
-            {
-              password: "",
-              email: "",
-            },
-            () => {
-              isLoggedIn();
-              isRegistered();
-              history.push("/main");
-            }
-          );
+          setIsUseEffect(true);
+        } else {
+          onSuccesPopupOpen(false);
+          handleStateInfo();
         }
       })
       .catch((err) => console.log(err));
   };
+
   return (
     <>
       <form

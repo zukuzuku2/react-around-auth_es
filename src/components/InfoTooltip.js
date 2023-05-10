@@ -4,13 +4,9 @@ import successIcon from "../images/succes.png";
 import errorIcon from "../images/error.png";
 import PopupWithForm from "./PopupWithForm";
 
-export function InfoTooltip({ isOpen, onClose, state }) {
+export function InfoTooltip({ isOpen, onClose, setStateInfoToolTip }) {
   return (
-    <PopupWithForm
-      name={`edit-profile`}
-      title={`Cambiar foto de perfil`}
-      isOpen={isOpen}
-    >
+    <PopupWithForm name={`info-tooltip`} title={`info-tooltip`} isOpen={isOpen}>
       <div className="success">
         <img
           src={btnClose}
@@ -18,10 +14,12 @@ export function InfoTooltip({ isOpen, onClose, state }) {
           className="form__close"
           onClick={onClose}
         />
-        <img src={state ? successIcon : errorIcon} alt="icono de exito" />
+        <img
+          src={setStateInfoToolTip ? successIcon : errorIcon}
+          alt="icono de exito"
+        />
         <h1 className="success__title">
-          {" "}
-          {state
+          {setStateInfoToolTip
             ? "¡Correcto! Ya estás registrado."
             : "Uy, algo salió mal. Por favor, inténtalo de nuevo."}{" "}
         </h1>
