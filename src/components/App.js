@@ -115,6 +115,10 @@ function App() {
     setIsRegistered(!isRegistered);
   }
 
+  function handleLoggedIn() {
+    setLoggedIn(!loggedIn);
+  }
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
@@ -138,7 +142,7 @@ function App() {
             />
           </ProtectedRoute>
           <Route path="/signin">
-            <Login />
+            <Login isLoggedIn={handleLoggedIn} isRegistered={handleRegister} />
           </Route>
           <Route path="/signup">
             <Register />

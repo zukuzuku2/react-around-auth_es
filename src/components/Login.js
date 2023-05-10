@@ -1,13 +1,46 @@
-import { React, useState } from "react";
-import { Link } from "react-router-dom";
+import { React, useEffect, useState } from "react";
+import { Link, useHistory } from "react-router-dom";
 
-function Login() {
-  const [email, setEmail] = useState("");
+import * as auth from "../utils/auth";
+
+function Login({ isLoggedIn, isRegistered }) {
+  const history = useHistory();
+  const [values, setValues] = useState({
+    password: "",
+    email: "",
+  });
+  const [isUseEffect, setIsUseEffect] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setValues({ ...values, [name]: value });
+    console.log(values);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!values.email || !values.password) {
+      return;
+    }
+    auth
+      .signin(values)
+      .then(() => {
+        if (localStorage.getItem("token")) {
+          setValues(
+            {
+              password: "",
+              email: "",
+            },
+            () => {
+              isLoggedIn();
+              isRegistered();
+              history.push("/main");
+            }
+          );
+        }
+      })
+      .catch((err) => console.log(err));
   };
-
   return (
     <>
       <form
@@ -25,16 +58,19 @@ function Login() {
           minLength="2"
           maxLength="50"
           required
-          // value={email}
+          value={values.email}
+          onChange={handleChange}
         />
         <input
-          type="password"
+          type="text"
           name="password"
           placeholder="Contraseña"
           className="sign-in__input"
           minLength="2"
           maxLength="50"
           required
+          value={values.password}
+          onChange={handleChange}
         />
         <button className="sign-in__button" type="submit">
           <p className="sign-in__button-text">Iniciar sesión</p>

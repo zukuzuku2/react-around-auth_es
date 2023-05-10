@@ -1,13 +1,28 @@
 import { React, useState } from "react";
-import { Link } from "react-router-dom/cjs/react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+
+import * as auth from "../utils/auth";
 
 function Register() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const history = useHistory();
+  const [values, setValues] = useState({
+    email: "",
+    password: "",
+  });
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setValues({ ...values, [name]: value });
+    console.log(values);
+  };
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(email, password);
+    auth
+      .signup(values)
+      .then((res) => {
+        history.push("/signin");
+      })
+      .catch((err) => console.log(err));
   };
 
   return (
@@ -27,7 +42,8 @@ function Register() {
           minLength="2"
           maxLength="50"
           required
-          // value={email}
+          value={values.email}
+          onChange={handleChange}
         />
         <input
           type="password"
@@ -37,6 +53,8 @@ function Register() {
           minLength="2"
           maxLength="50"
           required
+          value={values.password}
+          onChange={handleChange}
         />
         <button className="sign-up__button" type="submit">
           <p className="sign-up__button-text">Regístrate</p>
