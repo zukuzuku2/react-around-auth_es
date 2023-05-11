@@ -17,7 +17,6 @@ function Register({
   const handleChange = (e) => {
     const { name, value } = e.target;
     setValues({ ...values, [name]: value });
-    console.log(values);
   };
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -29,10 +28,8 @@ function Register({
         history.push("/signin");
       })
       .catch((err) => {
-        console.log(`ejecuto`);
         onSuccesPopupOpen();
         handleStateErrorInfo();
-        console.log(err);
       });
   };
 

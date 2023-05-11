@@ -1,7 +1,6 @@
 export const BASE_URL = "https://register.nomoreparties.co";
 
 export const signup = ({ email, password }) => {
-  console.log(`${BASE_URL}/signup`);
   return fetch(`${BASE_URL}/signup`, {
     method: "POST",
     headers: {
@@ -19,7 +18,6 @@ export const signup = ({ email, password }) => {
 };
 
 export const signin = ({ email, password }) => {
-  console.log(`Me ejecuto`);
   return fetch(`${BASE_URL}/signin`, {
     method: "POST",
     headers: {
@@ -27,18 +25,13 @@ export const signin = ({ email, password }) => {
     },
     body: JSON.stringify({ password, email }),
   })
-    .then((res) => {
-      res.json();
-      console.log(`Llego`);
-    })
+    .then((res) => res.json())
     .then((data) => {
-      debugger;
-      if (data.error) {
-        throw new Error(data.error);
-      } else {
+      if (data.token) {
         localStorage.setItem("token", data.token);
-        console.log(data);
         return data;
+      } else {
+        throw new Error(data.error);
       }
     })
     .catch((err) => console.log(err));

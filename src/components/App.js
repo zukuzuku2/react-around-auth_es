@@ -41,15 +41,23 @@ function App() {
   const [stateInfoToolTip, setStateInfoToolTip] = useState(true);
 
   useEffect(() => {
-    tokenCheck();
-  }, []);
+    function tokenCheck() {
+      const token = localStorage.getItem("token");
+      if (token) {
+        auth.getContent(token).then((res) => {
+          setLoggedIn(true);
+          setUserData(res.data.email);
+        });
+      }
+    }
+  }, [userData]);
 
   useEffect(() => {
     if (loggedIn) {
       setLoggedIn(true);
       history.push("/");
     }
-  }, [loggedIn]);
+  }, [history, loggedIn]);
 
   useEffect(() => {
     api.getUserInfo().then((data) => {
@@ -78,9 +86,6 @@ function App() {
     setEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
     setIsEditAvatarPopupOpen(false);
-    /*
-    En el submit de iniciar sesion o registrar cambiar el estado de setIsSuccesPopupOpen
-    */
     setIsSucessPopupOpen(false);
     setSelectedCard({});
   }
@@ -131,18 +136,6 @@ function App() {
   function handleLoggedOut() {
     localStorage.removeItem("token");
     setLoggedIn(false);
-  }
-
-  function tokenCheck() {
-    const token = localStorage.getItem("token");
-    if (token) {
-      console.log(token);
-      auth.getContent(token).then((res) => {
-        setLoggedIn(true);
-        setUserData(res.data.email);
-        console.log(userData);
-      });
-    }
   }
 
   function handleSuccessOrErrorInfo() {

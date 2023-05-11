@@ -3,34 +3,38 @@ import { Link, useHistory } from "react-router-dom";
 
 import * as auth from "../utils/auth";
 
-function Login({ isLoggedIn, onSuccesPopupOpen, handleStateInfo }) {
+function Login({
+  isLoggedIn,
+  onSuccesPopupOpen,
+  handleStateErrorInfo,
+  handleStateSuccesInfo,
+}) {
   const history = useHistory();
   const [values, setValues] = useState({
     password: "",
     email: "",
   });
-  const [isUseEffect, setIsUseEffect] = useState(false);
+  const [isChangeState, setIsChangeState] = useState(false);
 
   useEffect(() => {
-    if (isUseEffect) {
+    if (isChangeState) {
       setValues({
         password: "",
         email: "",
       });
       isLoggedIn();
+      handleStateSuccesInfo();
       onSuccesPopupOpen();
       history.push("/main");
     }
-  });
+  }, [history, isChangeState, isLoggedIn, onSuccesPopupOpen]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setValues({ ...values, [name]: value });
-    console.log(values);
   };
 
   const handleSubmit = (e) => {
-    console.log(`me ejecuto`);
     e.preventDefault();
     if (!values.email || !values.password) {
       return;
@@ -38,12 +42,11 @@ function Login({ isLoggedIn, onSuccesPopupOpen, handleStateInfo }) {
     auth
       .signin(values)
       .then(() => {
-        debugger;
         if (localStorage.getItem("token")) {
-          setIsUseEffect(true);
+          setIsChangeState(true);
         } else {
+          handleStateErrorInfo();
           onSuccesPopupOpen(false);
-          handleStateInfo();
         }
       })
       .catch((err) => console.log(err));
