@@ -27,7 +27,7 @@ function Login({
       onSuccesPopupOpen();
       history.push("/main");
     }
-  }, [history, isChangeState, isLoggedIn, onSuccesPopupOpen]);
+  }, [isChangeState]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -73,7 +73,7 @@ function Login({
           onChange={handleChange}
         />
         <input
-          type="text"
+          type="password"
           name="password"
           placeholder="Contraseña"
           className="sign-in__input"

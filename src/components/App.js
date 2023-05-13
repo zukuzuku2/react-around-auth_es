@@ -41,7 +41,7 @@ function App() {
   const [stateInfoToolTip, setStateInfoToolTip] = useState(true);
 
   useEffect(() => {
-    function tokenCheck() {
+    (function tokenCheck() {
       const token = localStorage.getItem("token");
       if (token) {
         auth.getContent(token).then((res) => {
@@ -49,7 +49,7 @@ function App() {
           setUserData(res.data.email);
         });
       }
-    }
+    })();
   }, [userData]);
 
   useEffect(() => {

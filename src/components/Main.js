@@ -6,11 +6,11 @@ import { CurrentUserContext } from "../contexts/CurrentUserContext";
 function Main(props) {
   const currentUser = useContext(CurrentUserContext);
   const imgProfile = useRef();
-  function changeImageProfile() {
-    imgProfile.current.src = currentUser.avatar;
-  }
 
   useEffect(() => {
+    function changeImageProfile() {
+      imgProfile.current.src = currentUser.avatar;
+    }
     changeImageProfile();
   }, [currentUser.avatar]);
 
