@@ -7,7 +7,7 @@ function Login({
   isLoggedIn,
   onSuccesPopupOpen,
   handleStateErrorInfo,
-  handleStateSuccesInfo,
+  handleStateSuccessInfo,
 }) {
   const history = useHistory();
   const [values, setValues] = useState({
@@ -23,11 +23,17 @@ function Login({
         email: "",
       });
       isLoggedIn();
-      handleStateSuccesInfo();
+      handleStateSuccessInfo();
       onSuccesPopupOpen();
       history.push("/main");
     }
-  }, [isChangeState]);
+  }, [
+    history,
+    isChangeState,
+    isLoggedIn,
+    onSuccesPopupOpen,
+    handleStateSuccessInfo,
+  ]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

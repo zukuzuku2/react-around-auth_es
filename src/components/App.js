@@ -145,7 +145,7 @@ function App() {
   function handleStateErrorInfo() {
     setStateInfoToolTip(false);
   }
-  function handleStateSuccesInfo() {
+  function handleStateSuccessInfo() {
     setStateInfoToolTip(true);
   }
 
@@ -176,7 +176,7 @@ function App() {
               isLoggedIn={handleLoggedIn}
               onSuccesPopupOpen={handleSuccessOrErrorInfo}
               handleStateErrorInfo={handleStateErrorInfo}
-              handleStateSuccesInfo={handleStateSuccesInfo}
+              handleStateSuccessInfo={handleStateSuccessInfo}
             />
           </Route>
           <Route path="/signup">
