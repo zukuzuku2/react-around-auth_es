@@ -183,7 +183,7 @@ function App() {
             <Register
               onSuccesPopupOpen={handleSuccessOrErrorInfo}
               handleStateErrorInfo={handleStateErrorInfo}
-              handleStateSuccesInfo={handleStateSuccesInfo}
+              handleStateSuccessInfo={handleStateSuccessInfo}
             />
           </Route>
           <Route>

@@ -6,7 +6,7 @@ import * as auth from "../utils/auth";
 function Register({
   onSuccesPopupOpen,
   handleStateErrorInfo,
-  handleStateSuccesInfo,
+  handleStateSuccessInfo,
 }) {
   const history = useHistory();
   const [values, setValues] = useState({
@@ -24,7 +24,7 @@ function Register({
       .signup(values)
       .then((res) => {
         onSuccesPopupOpen();
-        handleStateSuccesInfo();
+        handleStateSuccessInfo();
         history.push("/signin");
       })
       .catch((err) => {
