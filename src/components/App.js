@@ -41,16 +41,17 @@ function App() {
   const [stateInfoToolTip, setStateInfoToolTip] = useState(true);
 
   useEffect(() => {
-    (function tokenCheck() {
-      const token = localStorage.getItem("token");
-      if (token) {
-        auth.getContent(token).then((res) => {
-          setLoggedIn(true);
-          setUserData(res.data.email);
-        });
-      }
-    })();
-  }, [userData]);
+    const token = localStorage.getItem("token");
+    if (token) {
+      auth.getContent(token).then((res) => {
+        setLoggedIn(true);
+        setUserData(res.data.email);
+      }).catch((err) => {
+        console.error(err);
+        localStorage.removeItem("token");
+      });
+    }
+  }, []);
 
   useEffect(() => {
     if (loggedIn) {
@@ -60,22 +61,26 @@ function App() {
   }, [history, loggedIn]);
 
   useEffect(() => {
-    api.getUserInfo().then((data) => {
-      setCurrentUser(data);
-    });
-  }, [currentUser]);
+    if (loggedIn) {
+      api.getUserInfo().then((data) => {
+        setCurrentUser(data);
+      }).catch((err) => console.error(err));
+    }
+  }, [loggedIn]);
 
   useEffect(() => {
-    api.getCards().then((data) => {
-      setCards(data);
-    });
-  }, []);
+    if (loggedIn) {
+      api.getCards().then((data) => {
+        setCards(data);
+      }).catch((err) => console.error(err));
+    }
+  }, [loggedIn]);
 
   function handleAddPlaceSubmit({ name, link }) {
     api.addCard({ name: name, link: link, owner: currentUser }).then((data) => {
       setCards([data, ...cards]);
-    });
-    closeAllPopups();
+      closeAllPopups();
+    }).catch((err) => console.error(err));
   }
 
   function handleCardClick(card) {
@@ -105,8 +110,8 @@ function App() {
   function handleUpdateUser({ name, about }) {
     api.updateUserInfo({ name, about }).then((data) => {
       setCurrentUser(data);
-    });
-    closeAllPopups();
+      closeAllPopups();
+    }).catch((err) => console.error(err));
   }
 
   function handleUpdateAvatar(avatar) {
@@ -117,8 +122,8 @@ function App() {
     api.deleteCards(cardID).then(() => {
       api.getCards().then((data) => {
         setCards(data);
-      });
-    });
+      }).catch((err) => console.error(err));
+    }).catch((err) => console.error(err));
   }
 
   function handleCardLike(card) {
@@ -126,7 +131,7 @@ function App() {
 
     api.changeLikeCardStatus(card._id, !isLiked).then((newCard) => {
       setCards((state) => state.map((c) => (c._id === card._id ? newCard : c)));
-    });
+    }).catch((err) => console.error(err));
   }
 
   function handleLoggedIn() {

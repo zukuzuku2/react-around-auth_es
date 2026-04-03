@@ -1,5 +1,12 @@
 export const BASE_URL = "https://register.nomoreparties.co";
 
+function checkResponse(res) {
+  if (!res.ok) {
+    return Promise.reject(`Error: ${res.status} ${res.statusText}`);
+  }
+  return res.json();
+}
+
 export const signup = ({ email, password }) => {
   return fetch(`${BASE_URL}/signup`, {
     method: "POST",
@@ -8,12 +15,12 @@ export const signup = ({ email, password }) => {
     },
     body: JSON.stringify({ password, email }),
   })
-    .then((res) => res.json())
+    .then(checkResponse)
     .then((data) => {
       if (data.error) {
         throw new Error(data.error);
       }
-      return data.error;
+      return data;
     });
 };
 
@@ -25,16 +32,15 @@ export const signin = ({ email, password }) => {
     },
     body: JSON.stringify({ password, email }),
   })
-    .then((res) => res.json())
+    .then(checkResponse)
     .then((data) => {
       if (data.token) {
         localStorage.setItem("token", data.token);
         return data;
       } else {
-        throw new Error(data.error);
+        throw new Error(data.error || "Error al iniciar sesión");
       }
-    })
-    .catch((err) => console.log(err));
+    });
 };
 
 export const getContent = (token) => {
@@ -42,11 +48,7 @@ export const getContent = (token) => {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      Authorization: `Bearer ${token}`,
     },
-  })
-    .then((res) => res.json())
-
-    .then((data) => data)
-    .catch((err) => console.log(err));
+  }).then(checkResponse);
 };

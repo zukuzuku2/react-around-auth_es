@@ -1,12 +1,27 @@
 import React, { useState } from "react";
 import btnClose from "../images/closeIcon.svg";
 import PopupWithForm from "./PopupWithForm";
+
+function isSafeUrl(url) {
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === "https:" || parsed.protocol === "http:";
+  } catch {
+    return false;
+  }
+}
+
 export function AddPlacePopup({ isOpen, onClose, onSubmit }) {
   const [name, setName] = useState("");
   const [link, setLink] = useState("");
+  const [linkError, setLinkError] = useState("");
 
   function handeSubmit(e) {
     e.preventDefault();
+    if (!isSafeUrl(link)) {
+      setLinkError("La URL debe comenzar con http:// o https://");
+      return;
+    }
     onSubmit({ name, link });
   }
 
@@ -16,6 +31,7 @@ export function AddPlacePopup({ isOpen, onClose, onSubmit }) {
 
   function handleLinkChange(e) {
     setLink(e.target.value);
+    setLinkError("");
   }
 
   return (
@@ -53,7 +69,7 @@ export function AddPlacePopup({ isOpen, onClose, onSubmit }) {
             value={link}
           />
           <span className="form-link-error form__input-error">
-            Este campo es obligatorio
+            {linkError || "Este campo es obligatorio"}
           </span>
         </div>
         <button className="form__submit form-add-card" type="submit">

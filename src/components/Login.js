@@ -55,7 +55,11 @@ function Login({
           onSuccesPopupOpen(false);
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.error(err);
+        handleStateErrorInfo();
+        onSuccesPopupOpen();
+      });
   };
 
   return (
@@ -83,7 +87,7 @@ function Login({
           name="password"
           placeholder="Contraseña"
           className="sign-in__input"
-          minLength="2"
+          minLength="8"
           maxLength="50"
           required
           value={values.password}

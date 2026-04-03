@@ -2,15 +2,30 @@ import React, { useState } from "react";
 import btnClose from "../images/closeIcon.svg";
 import PopupWithForm from "./PopupWithForm";
 
+function isSafeUrl(url) {
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === "https:" || parsed.protocol === "http:";
+  } catch {
+    return false;
+  }
+}
+
 export function EditAvatarPopup({ isOpen, onClose, onChangeAvatar }) {
-  const [urlAvatarProfile, setUrlAvatarProfile] = useState();
+  const [urlAvatarProfile, setUrlAvatarProfile] = useState("");
+  const [urlError, setUrlError] = useState("");
 
   function handleLinkChange(e) {
     setUrlAvatarProfile(e.target.value);
+    setUrlError("");
   }
 
   function handleAvatarProfile(e) {
     e.preventDefault();
+    if (!isSafeUrl(urlAvatarProfile)) {
+      setUrlError("La URL debe comenzar con http:// o https://");
+      return;
+    }
     onChangeAvatar(urlAvatarProfile);
   }
   return (
@@ -40,7 +55,7 @@ export function EditAvatarPopup({ isOpen, onClose, onChangeAvatar }) {
             value={urlAvatarProfile}
           />
           <span className="form-name-error form__input-error">
-            Este campo es obligatorio
+            {urlError || "Este campo es obligatorio"}
           </span>
         </div>
         <button className="form__submit form__edit-profile" type="submit">

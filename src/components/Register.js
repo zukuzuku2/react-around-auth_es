@@ -58,7 +58,7 @@ function Register({
           name="password"
           placeholder="Contraseña"
           className="sign-up__input"
-          minLength="2"
+          minLength="8"
           maxLength="50"
           required
           value={values.password}

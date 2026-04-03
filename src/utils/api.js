@@ -9,7 +9,10 @@ class Api {
   fetchData(url, requestOptions) {
     return fetch(`${this._option.url}/${url}`, requestOptions).then(
       (response) => {
-        return response.json(this._option.url, url);
+        if (!response.ok) {
+          return Promise.reject(`Error: ${response.status} ${response.statusText}`);
+        }
+        return response.json();
       }
     );
   }
@@ -105,8 +108,8 @@ class Api {
 }
 
 const api = new Api({
-  token: "590c9c0f-0cfb-43a1-be02-96b36cadf695",
-  url: "https://around.nomoreparties.co/v1/web_es_cohort_04",
+  token: process.env.REACT_APP_API_TOKEN,
+  url: process.env.REACT_APP_API_URL,
 });
 
 export default api;
