@@ -1,5 +1,13 @@
+const ALLOWED_URLS = [
+  "https://register.nomoreparties.co",
+  "https://api.nomoreparties.co",
+];
+
 class Api {
   constructor(option = {}) {
+    if (!ALLOWED_URLS.includes(option.url)) {
+      throw new Error("URL no permitida");
+    }
     this._option = option;
     this._header = new Headers();
     this._header.append("Authorization", this._option.token);

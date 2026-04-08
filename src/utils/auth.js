@@ -1,5 +1,11 @@
 export const BASE_URL = "https://register.nomoreparties.co";
 
+let _token = null;
+
+export const saveToken = (token) => { _token = token; };
+export const getToken = () => _token;
+export const removeToken = () => { _token = null; };
+
 function checkResponse(res) {
   if (!res.ok) {
     return Promise.reject(`Error: ${res.status} ${res.statusText}`);
@@ -35,7 +41,7 @@ export const signin = ({ email, password }) => {
     .then(checkResponse)
     .then((data) => {
       if (data.token) {
-        localStorage.setItem("token", data.token);
+        saveToken(data.token);
         return data;
       } else {
         throw new Error(data.error || "Error al iniciar sesión");
